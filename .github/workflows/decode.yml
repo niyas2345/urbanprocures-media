@@ -1,0 +1,20 @@
+name: decode-images
+on:
+  push:
+    paths: ['b64/**']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  decode:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          mkdir -p posts
+          for f in b64/*.b64; do base64 -d "$f" > "posts/$(basename "$f" .b64)"; done
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add posts
+          git diff --cached --quiet || git commit -m 'Decode images into posts/'
+          git push
