@@ -13,6 +13,7 @@ jobs:
       - run: |
           mkdir -p posts
           for f in b64/*.b64; do base64 -d "$f" > "posts/$(basename "$f" .b64)"; done
+          for p in posts/*.part1; do [ -e "$p" ] || continue; b="${p%.part1}"; cat "$b".part[0-9] > "$b"; rm -f "$b".part[0-9]; done
           git config user.name github-actions
           git config user.email github-actions@users.noreply.github.com
           git add posts
